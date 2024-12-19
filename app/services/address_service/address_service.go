@@ -12,6 +12,7 @@ type AddressService interface {
 	Delete(ctx context.Context, id uint) error
 	FindAll(ctx context.Context) ([]dto.AddressData, error)
 	FindByID(ctx context.Context, id uint) (*dto.AddressData, error)
+	FindAllByUserID(ctx context.Context, id uint) ([]dto.AddressData, error)
 	Show(ctx context.Context, id uint) (*dto.AddressData, error)
-	Update(ctx context.Context, req requests.AddressUpdateRequest) error
+	Update(ctx context.Context, id uint,req requests.AddressUpdateRequest) error
 }

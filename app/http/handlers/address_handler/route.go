@@ -17,6 +17,7 @@ func AddressRoute(route fiber.Router, cnf *configs.Config) {
 	address := route.Group("/address")
 
 	address.Get("/:id", handler.Show)
+	address.Get("/user/:id", handler.FindAllByIDUser)
 	address.Put("/:id", handler.Update)
 	address.Post("/", handler.Create)
 	address.Delete("/:id", handler.Delete)

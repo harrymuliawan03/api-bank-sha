@@ -1,4 +1,4 @@
-package addresshandler
+package connectappshandler
 
 import (
 	"context"
@@ -8,29 +8,29 @@ import (
 	"github.com/harrymuliawan03/api-bank-sha.git/app/configs"
 	"github.com/harrymuliawan03/api-bank-sha.git/app/dto"
 	"github.com/harrymuliawan03/api-bank-sha.git/app/http/requests"
-	addressservice "github.com/harrymuliawan03/api-bank-sha.git/app/services/address_service"
+	connectAppsService "github.com/harrymuliawan03/api-bank-sha.git/app/services/connect_apps_service"
 	"github.com/harrymuliawan03/api-bank-sha.git/app/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type AddressHandler struct {
-	addressService addressservice.AddressService
+type ConnectAppsHandler struct {
+	connectAppsService connectAppsService.ConnectAppsService
 	cnf         *configs.Config
 }
 
-func NewAddressHandler(addressService addressservice.AddressService, config *configs.Config) *AddressHandler {
-	return &AddressHandler{
-		addressService: addressService,
+func NewConnectAppsHandler(connectAppsService connectAppsService.ConnectAppsService, config *configs.Config) *ConnectAppsHandler {
+	return &ConnectAppsHandler{
+		connectAppsService: connectAppsService,
 		cnf:         config,
 	}
 }
 
-func (u *AddressHandler) Create(ctx *fiber.Ctx) error {
+func (u *ConnectAppsHandler) Create(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
-	var req requests.AddressCreateRequest
+	var req requests.ConnectAppsCreateRequest
 	if err := ctx.BodyParser(&req); err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusBadRequest, err.Error())
 	}
@@ -40,57 +40,57 @@ func (u *AddressHandler) Create(ctx *fiber.Ctx) error {
 		return dto.ResponseApiError(ctx, "validation error", http.StatusBadRequest, fails)
 	}
 
-	err := u.addressService.Create(c, req)
+	err := u.connectAppsService.Create(c, req)
 	if err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusInternalServerError, err.Error())
 	}
 
-	return dto.ResponseApiOk(ctx, "address created successfully", nil)
+	return dto.ResponseApiOk(ctx, "connect apps created successfully", nil)
 }
 
-func (u *AddressHandler) FindAllByIDUser(ctx *fiber.Ctx) error {
+func (u *ConnectAppsHandler) FindAllByIDUser(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	id, _ := ctx.ParamsInt("id")
 
-	res, err := u.addressService.FindAllByUserID(c, uint(id))
+	res, err := u.connectAppsService.FindAllByUserID(c, uint(id))
 	if err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusInternalServerError, err.Error())
 	}
 
-	return dto.ResponseApiOk(ctx, "get address successfully", res)
+	return dto.ResponseApiOk(ctx, "get connect apps successfully", res)
 }
 
-func (u *AddressHandler) Show(ctx *fiber.Ctx) error {
+func (u *ConnectAppsHandler) Show(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	id, _ := ctx.ParamsInt("id")
 	
 	if id == 0 {
-		return dto.ResponseApiError(ctx, "Address id is required", http.StatusBadRequest, nil)
+		return dto.ResponseApiError(ctx, "ConnectApps id is required", http.StatusBadRequest, nil)
 	}
 
-	res, err := u.addressService.FindByID(c, uint(id))
+	res, err := u.connectAppsService.FindByID(c, uint(id))
 	if err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusInternalServerError, err.Error())
 	}
 
-	return dto.ResponseApiOk(ctx, "get address successfully", res)
+	return dto.ResponseApiOk(ctx, "get connect apps successfully", res)
 }
 
-func(u *AddressHandler) Update(ctx *fiber.Ctx) error {
+func(u *ConnectAppsHandler) Update(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	id, _ := ctx.ParamsInt("id")
 
 	if id == 0 {
-		return dto.ResponseApiError(ctx, "Address id is required", http.StatusBadRequest, nil)
+		return dto.ResponseApiError(ctx, "ConnectApps id is required", http.StatusBadRequest, nil)
 	}
 
-	var req requests.AddressUpdateRequest
+	var req requests.ConnectAppsUpdateRequest
 	if err := ctx.BodyParser(&req); err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusBadRequest, err.Error())
 	}
@@ -100,27 +100,27 @@ func(u *AddressHandler) Update(ctx *fiber.Ctx) error {
 		return dto.ResponseApiError(ctx, "validation error", http.StatusBadRequest, fails)
 	}
 
-	err := u.addressService.Update(c, uint(id), req)
+	err := u.connectAppsService.Update(c, uint(id), req)
 	if err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusInternalServerError, err.Error())
 	}
 
-	return dto.ResponseApiOk(ctx, "address updated successfully", nil)
+	return dto.ResponseApiOk(ctx, "connect apps updated successfully", nil)
 }
 
-func (u *AddressHandler) Delete(ctx *fiber.Ctx) error {
+func (u *ConnectAppsHandler) Delete(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	id, _ := ctx.ParamsInt("id")
 	if id == 0 {
-		return dto.ResponseApiError(ctx, "Address id is required", http.StatusBadRequest, nil)
+		return dto.ResponseApiError(ctx, "ConnectApps id is required", http.StatusBadRequest, nil)
 	}
 
-	err := u.addressService.Delete(c, uint(id))
+	err := u.connectAppsService.Delete(c, uint(id))
 	if err != nil {
 		return dto.ResponseApiError(ctx, err.Error(), http.StatusInternalServerError, err.Error())
 	}
 
-	return dto.ResponseApiOk(ctx, "address deleted successfully", nil)
+	return dto.ResponseApiOk(ctx, "connect apps deleted successfully", nil)
 }

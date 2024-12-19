@@ -8,7 +8,8 @@ import (
 
 type AddressRepository interface {
 	Save(ctx context.Context, data *models.Address) error
-	FindByIDUser(ctx context.Context, id uint) (models.Address, error)
+	FindByID(ctx context.Context, id uint) (models.Address, error)
+	FindAllByIDUser(ctx context.Context, id uint) ([]models.Address, error)
 	Update(ctx context.Context, data *models.Address) error
 	Delete(ctx context.Context, id uint) error
 }
